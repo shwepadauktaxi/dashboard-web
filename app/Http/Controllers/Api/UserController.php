@@ -249,7 +249,12 @@ class UserController extends Controller
     {
         $user = Auth::user();
        
-        $trips = Trip::where('driver_id',$user->id)->whereNot('status','pending')->whereNot('status','accepted')->get();
+        $trips = Trip::where('driver_id',$user->id)
+                        ->whereNot('status','pending')
+                        ->whereNot('status','accepted')
+                        ->whereNot('status','canceled')
+                        ->latest()
+                        ->get();
         
         return response()->json($trips, 200);
     }
