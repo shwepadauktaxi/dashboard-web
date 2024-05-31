@@ -250,43 +250,43 @@ class UserController extends Controller
     {
         $user = Auth::user();
        
-        $trips = Trip::where('driver_id',$user->id)
-                        ->whereNot('status','pending')
-                        ->whereNot('status','accepted')
-                        ->whereNot('status','canceled')
-                        ->latest()
-                        ->get();
+        // $trips = Trip::where('driver_id',$user->id)
+        //                 ->whereNot('status','pending')
+        //                 ->whereNot('status','accepted')
+        //                 ->whereNot('status','canceled')
+        //                 ->latest()
+        //                 ->get();
         
-        // $trips = Trip::where('driver_id', $user->id)
-        //     ->whereNotIn('status', ['pending', 'accepted', 'canceled'])
-        //     ->latest()
-        //     ->get()
-        //     ->map(function ($trip) {
-        //         return [
-        //             'id' => $trip->id,
-        //             'user_id'=>$trip->user_id,
-        //             'distance'=> $trip->distance,
-        //             'duration'=> $trip->duration,
-        //             'waiting_time'=> $trip->waiting_time,
-        //             'normal_fee'=>$trip->normal_fee,
-        //             'waiting_fee'=>$trip->waiting_fee,
-        //             'extra_fee'=>$trip->extra_fee,
-        //             'initial_fee'=>$trip->initial_fee,
-        //             'total_cost'=>$trip->total_cost,
-        //             'start_lat'=>$trip->start_lat,
-        //             'start_lng'=>$trip->start_lng,
-        //             'end_lat'=>$trip->end_lat,
-        //             'end_lng'=>$trip->end_lng,
-        //             'status' => $trip->status,
-        //             'start_address'=>$trip->start_address,
-        //             'end_address'=>$trip->end_address,
-        //             'driver_id' => $trip->driver_id,
-        //             'cartype'=>$trip->cartype,
-        //             'created_at' => Carbon::parse($trip->created_at)->format('Y-m-d h:i:s A'),
-        //             'updated_at' => Carbon::parse($trip->updated_at)->format('Y-m-d h:i:s A'),
+        $trips = Trip::where('driver_id', $user->id)
+            ->whereNotIn('status', ['pending', 'accepted', 'canceled'])
+            ->latest()
+            ->get()
+            ->map(function ($trip) {
+                return [
+                    'id' => $trip->id,
+                    'user_id'=>$trip->user_id,
+                    'distance'=> $trip->distance,
+                    'duration'=> $trip->duration,
+                    'waiting_time'=> $trip->waiting_time,
+                    'normal_fee'=>$trip->normal_fee,
+                    'waiting_fee'=>$trip->waiting_fee,
+                    'extra_fee'=>$trip->extra_fee,
+                    'initial_fee'=>$trip->initial_fee,
+                    'total_cost'=>$trip->total_cost,
+                    'start_lat'=>$trip->start_lat,
+                    'start_lng'=>$trip->start_lng,
+                    'end_lat'=>$trip->end_lat,
+                    'end_lng'=>$trip->end_lng,
+                    'status' => $trip->status,
+                    'start_address'=>$trip->start_address,
+                    'end_address'=>$trip->end_address,
+                    'driver_id' => $trip->driver_id,
+                    'cartype'=>$trip->cartype,
+                    'created_at' => Carbon::parse($trip->created_at)->toISOString(),
+                    'updated_at' => Carbon::parse($trip->updated_at)->toISOString(),
                    
-        //         ];
-        //     });
+                ];
+            });
         return response()->json($trips, 200);
     }
 

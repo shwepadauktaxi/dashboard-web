@@ -44,6 +44,7 @@ class TripStatusController extends Controller
         $trip->total_cost = $request->total_cost;
         $trip->end_lat = $request->end_lat;
         $trip->end_lng = $request->start_lng;
+        $trip->created_at = now();
 
         $trip->save();
 
