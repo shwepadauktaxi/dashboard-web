@@ -100,25 +100,7 @@
                       </div>
                       <div class="card-body">
                         <ul id="drivercount" class="navbar-nav" style="height: 300px;overflow-y:auto;overflow-x:hidden">
-                            <li title="Driver Id : 007" class="nav-item d-flex  align-items-center border-bottom pb-2 my-2">
-                                <span class="col-1">1</span>
-                                <div class="d-flex col-7">
-                                     
-                                     <img class="" src="{{ asset('assets/logo/user.png') }}" alt="User"
-                                     style="width:3rem;height:3rem; object-fit: cover; object-position: center;border-radius:100%;margin-right:15px">
-                           
-    
-                                    <div class="col-8 text-center">
-                                        <div>Name</div>
-                                        <div>09798123005</div>
-                                    </div>
-                                </div>
-                                <div class="col-5 text-center">
-                                    <div>total trip</div>
-                                    <div>30</div>
-                                </div>
-    
-                            </li>
+                        
                           
                         </ul>
     
