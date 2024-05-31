@@ -355,9 +355,9 @@
                         let drivercount = document.querySelector('#drivercount');
 
                         // console.log(drivercount)
-
-                        if(resporn){
-                                resporn.data.forEach((item,idx)=>{
+                        drivercount.innerHTML ='';
+                     
+                            resporn.data.forEach((item,idx)=>{
                                 drivercount.innerHTML += `
                             <li title="Driver Id : ${item.driver_id}" class="nav-item d-flex  align-items-center border-bottom pb-2 my-2">
                                     <span class="col-1">${idx +1}</span>
@@ -384,13 +384,6 @@
                             
                             })
 
-                        }else{
-                            drivercount.innerHTML = `
-                            <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                            </div>
-                            `
-                        }
                        
                         
                                                 
@@ -398,7 +391,12 @@
                         
                     })
                     .catch((error) => {
-                        console.log(error)
+                        // console.log(error)
+                        drivercount.innerHTML = `
+                            <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                            </div>
+                            `;
                         
                     })
                 
