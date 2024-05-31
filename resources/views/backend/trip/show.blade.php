@@ -79,7 +79,9 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between">
                             <p>Trip Detail</p>
-                            <p>Date : <span>{{ Carbon\Carbon::parse($trip->updated_up)->format('F j,Y h:m:s A') }}</span></p>
+                            {{-- <p>Date : <span>{{ Carbon\Carbon::parse($trip->updated_up)->format('F j,Y h:m A') }}</span></p> --}}
+                            <p>Date : <span>{{ $trip->updated_up->format('F j,Y h:m A') }}</span></p>
+
 
                         </div>
                     </div>

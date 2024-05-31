@@ -63,7 +63,7 @@
 								ID-{{$trip->id }}
 							</a></td>
 							
-							@dd($trip)
+							
 							<td>
 									<a class="text-dark text-decoration-none"
 										href="{{ route('trip.show', $trip->id) }}">
