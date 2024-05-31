@@ -282,8 +282,8 @@ class UserController extends Controller
                     'end_address'=>$trip->end_address,
                     'driver_id' => $trip->driver_id,
                     'cartype'=>$trip->cartype,
-                    'created_at' => Carbon::parse($trip->created_at)->toISOString(),
-                    'updated_at' => Carbon::parse($trip->updated_at)->toISOString(),
+                    'created_at' => Carbon::parse($trip->created_at)->format('Y-m-d h:i A'),
+                    'updated_at' => Carbon::parse($trip->updated_at)->format('Y-m-d h:i A'),
                    
                 ];
             });
