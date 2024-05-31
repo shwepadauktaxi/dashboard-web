@@ -355,33 +355,44 @@
                         let drivercount = document.querySelector('#drivercount');
 
                         // console.log(drivercount)
-                       
-                        resporn.data.forEach((item,idx)=>{
-                            drivercount.innerHTML += `
-                        <li title="Driver Id : ${item.driver_id}" class="nav-item d-flex  align-items-center border-bottom pb-2 my-2">
-                                <span class="col-1">${idx +1}</span>
-                                <div class="d-flex col-7">
-                                     
-                                     <img class="" src="${item.user_image.profile_image === null ? domain+'assets/logo/user.png': 'uploads/images/profiles/'+item.user_image.profile_image}" alt="User"
-                                     style="width:3rem;height:3rem; object-fit: cover; object-position: center;border-radius:100%;margin-right:15px">
-                           
-    
-                                    <div class="col-8 text-center">
-                                        <div>${item.name}</div>
-                                        <div>${item.phone}</div>
+
+                        if(resporn){
+                                resporn.data.forEach((item,idx)=>{
+                                drivercount.innerHTML += `
+                            <li title="Driver Id : ${item.driver_id}" class="nav-item d-flex  align-items-center border-bottom pb-2 my-2">
+                                    <span class="col-1">${idx +1}</span>
+                                    <div class="d-flex col-7">
+                                        
+                                        <img class="" src="${item.user_image.profile_image === null ? domain+'assets/logo/user.png': 'uploads/images/profiles/'+item.user_image.profile_image}" alt="User"
+                                        style="width:3rem;height:3rem; object-fit: cover; object-position: center;border-radius:100%;margin-right:15px">
+                            
+        
+                                        <div class="col-8 text-center">
+                                            <div>${item.name}</div>
+                                            <div>${item.phone}</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-5 text-center">
-                                    <div>total trip</div>
-                                    <div>${item.trips_count}</div>
-                                </div>
-    
-                            </li>
-                          
-                        `;
-                        console.log(item)
-                           
-                        })
+                                    <div class="col-5 text-center">
+                                        <div>total trip</div>
+                                        <div>${item.trips_count}</div>
+                                    </div>
+        
+                                </li>
+                            
+                            `;
+                            //console.log(item)
+                            
+                            })
+
+                        }else{
+                            drivercount.innerHTML = `
+                            <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                            </div>
+                            `
+                        }
+                       
+                        
                                                 
                         // console.log(resporn.data)
                         
