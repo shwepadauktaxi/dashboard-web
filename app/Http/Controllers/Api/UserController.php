@@ -264,15 +264,15 @@ class UserController extends Controller
             ->latest()
             ->get()
             ->map(function ($trip) {
-                // // Decode the JSON array stored in extra_fee_list
-                //     $extra_fee_ids = json_decode($trip->extra_fee_list);
+                // Decode the JSON array stored in extra_fee_list
+                    $extra_fee_ids = json_decode($trip->extra_fee_list);
 
-                //     // Fetch fee details based on decoded IDs
-                //     $fees = collect($extra_fee_ids)->map(function ($id) {
-                //         return DB::table('fees')->where('id', $id)->first();
-                //     });
-                $extraFeeList = json_decode($trip->extra_fee_list, true);
-                $extraFees = Fee::whereIn('id', $extraFeeList)->get();
+                    // Fetch fee details based on decoded IDs
+                    $fees = collect($extra_fee_ids)->map(function ($id) {
+                        return DB::table('fees')->where('id', $id)->first();
+                    });
+                // $extraFeeList = json_decode($trip->extra_fee_list, true);
+                // $extraFees = Fee::whereIn('id', $extraFeeList)->get();
                 return [
                     'id' => $trip->id,
                     'user_id'=>$trip->user_id,
@@ -295,8 +295,8 @@ class UserController extends Controller
                     'cartype'=>$trip->cartype,
                     'start_time'=>$trip->start_time,
                     'end_time' => $trip->end_time,
-                    // 'extra_fee_list'=>$fees->toArray(),
-                    'extra_fee_list'=>$extraFees,
+                    'extra_fee_list'=>$fees->toArray(),
+                    // 'extra_fee_list'=>$extraFees,
 
                     'created_at' => Carbon::parse($trip->created_at)->format('Y-m-d h:i A'),
                     'updated_at' => Carbon::parse($trip->updated_at)->format('Y-m-d h:i A'),

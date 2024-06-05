@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TripController extends Controller
 {
@@ -53,11 +54,14 @@ class TripController extends Controller
             'end_lng' => 'required|numeric',
             // 'status' =>'required',
             'trip_id'=> 'nullable',
-            'start_time '=> 'required',
+            'start_time'=> 'required',
             'end_time'=> 'required',
-            'extra_fee_list' => 'required|array',
-            'extra_fee_list.*.id' => 'integer|exists:fees,id',
+            
+            
         ]);
+
+
+        // dd($request);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
@@ -72,14 +76,17 @@ class TripController extends Controller
         $driver->save();
     }
 
-    $extraFeeIds = array_column($request->extra_fee_list, 'id');
-       
+          
+            if($request->extra_fee_list !== null && $request->extra_fee_list !== "null"){
+                $array = explode(',', $request->extra_fee_list);
+                $fees=  json_encode($array);
+            }else{
+                $arr = [];
+                $fees =  json_encode($arr);
+            }
         if($request->trip_id == null || $request->trip_id == 'null'){
             
-            // dd($request->extra_fee_list);
-            
-          
-            // dd($extraFeeIds);
+ 
             
             $trip = new Trip();
     
@@ -101,7 +108,8 @@ class TripController extends Controller
             $trip->cartype = $request->cartype;
             $trip->start_time = $request->start_time;
             $trip->end_time = $request->end_time;
-            $trip->extra_fee_list = json_encode($extraFeeIds);
+            $trip->cartype = $request->cartype;
+            $trip->extra_fee_list = $fees;
             
     
 
@@ -109,9 +117,7 @@ class TripController extends Controller
             $total = $request->total_cost; // Total amount
             // $percentage = 10; // Percentage to calculate
             
-            // Calculate the percentage amount
-            // $percentageAmount = $total - $system->commission_fee;
-            
+          
             // Update user's balance
             $driver->balance -= $system->commission_fee;
     
@@ -129,21 +135,22 @@ class TripController extends Controller
             $system->balance += $system->commission_fee;
             $system->save();
             $trip->save();
+            $extra_fee_ids = json_decode($trip->extra_fee_list);
 
-            // $drivers = User::role('user')
-            // ->with(['trips' => function ($query) {
-            //     $query->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
-            // },'userImage'])
-           
-            // ->withCount(['trips' => function ($query) {
-            //     $query->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
-            //     ->where('status','completed');
-                
-            // }])->orderBy('trips_count','desc')
-           
-            // ->get();
-            // event(new DriverUpdated($drivers));
+            // Fetch fee details based on decoded IDs
+            if($fees !== null && $fees !== 'null'){
+                $datafee = collect($extra_fee_ids)->map(function ($id) {
+                    return DB::table('fees')->where('id', $id)->first();
+                });
+            }else{
+                $datafee = $fees;
+            }
+            
+            $trip->extra_fee_list = $datafee;
             return response()->json($trip);
+
+
+
         }else{
                     $trip = Trip::findOrFail($request->trip_id);
             
@@ -166,7 +173,7 @@ class TripController extends Controller
             $trip->driver_id = $driver->id;
             $trip->start_time = $request->start_time;
             $trip->end_time = $request->end_time;
-            $trip->extra_fee_list = json_encode($extraFeeIds);
+            $trip->extra_fee_list = json_encode($request->extra_fee_list);
             
             $system = System::findOrFail(1);
 
