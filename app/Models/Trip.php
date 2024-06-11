@@ -14,6 +14,8 @@ class Trip extends Model
 {
     use HasFactory;
 
+
+
     protected $fillable = [
         'user_id',
         'distance',
@@ -33,9 +35,17 @@ class Trip extends Model
         'end_lng',
         'start_address',
         'end_address',
+        'start_time',
+        'end_time',
+        'extra_fee_list',
         'cartype',
-        'status'
+        'status',
+        'commission_fee'
     ];
+
+    // protected $casts = [
+    //     'extra_fee_list' => 'array',
+    // ];
 
     public function user()
     {
@@ -49,6 +59,6 @@ class Trip extends Model
 
     public function exterfees(){
         return $this->belongsToMany(Fee::class, 'tripandexterfee', 'trip_id', 'exter_id');
-       
+
     }
 }

@@ -9,9 +9,9 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
 	<title>{{ config('app.name', 'Shwe Padauk Taxi Service') }}</title>
-	<link href="{{ asset('assets/icon/apple-touch-icon.png') }}" rel="apple-touch-icon" sizes="180x180">
-	<link type="image/png" href="{{ asset('assets/icon/favicon-32x32.png') }}" rel="icon" sizes="32x32">
-	<link type="image/png" href="{{ asset('assets/icon/favicon-16x16.png') }}" rel="icon" sizes="16x16">
+    <link href="{{ asset('assets/icon/apple-touch-icon.png') }}" rel="apple-touch-icon" sizes="180x180">
+    <link type="image/png" href="{{ asset('assets/icon/favicon-32x32.png') }}" rel="icon" sizes="32x32">
+    <link type="image/png" href="{{ asset('assets/icon/favicon-16x16.png') }}" rel="icon" sizes="16x16">
 	<link href="{{ asset('assets/icon/site.webmanifest') }}" rel="manifest">
 	<!-- Fonts -->
 	<link href="//fonts.gstatic.com" rel="dns-prefetch">
@@ -25,12 +25,12 @@
 	<div id="app">
 		<div class="row justify-content-center align-items-center vh-100 m-0">
 			<div class="">
-				<div class=" text-center w-100 d-none d-sm-block">
-					<img src="{{ asset('assets/logo/logo.png') }}" alt="" width="15%" height="">
-				</div>
-				<div class=" text-center w-100 d-sm-none">
-					<img src="{{ asset('assets/logo/logo.png') }}" alt="" width="50%" height="">
-				</div>
+                <div class=" text-center w-100 d-none d-sm-block">
+                    <img src="{{ asset('assets/logo/logo.png') }}" alt="" width="15%" height="">
+                </div>
+                <div class=" text-center w-100 d-sm-none">
+                    <img src="{{ asset('assets/logo/logo.png') }}" alt="" width="50%" height="">
+                </div>
 				<div class="row justify-content-center">
 					<div class="col-md-4">
 
@@ -81,7 +81,7 @@
 
 		</div>
 		<div style="margin-top: -2rem">
-			<p class="text-center small fw-bold">Copyright &copy; 2023 Shwe Padauk. All right reserved</p>
+			<p class="text-center small fw-bold">Copyright &copy; 2024 {{ env('APP_NAME') }}. All right reserved</p>
 		</div>
 	</div>
 	<script>

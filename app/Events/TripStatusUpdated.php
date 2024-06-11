@@ -10,22 +10,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TripNearDriverAllEvent implements ShouldBroadcast
-
+class TripStatusUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $nearbyDrivers ;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($nearbyDrivers)
-    {
-        $this->nearbyDrivers = "hello world";
-    }
+   
+     public $trip;
+
+     public function __construct($trip)
+     {
+         $this->trip = $trip;
+     }
 
     /**
      * Get the channels the event should broadcast on.
@@ -34,14 +34,13 @@ class TripNearDriverAllEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('request-near-driver-all-channel');
+        // return new PrivateChannel('trip-status-update-channel');
+
+        return new Channel('trip-status-update-channel');
     }
 
-    public function broadcastAs()
-    {
-        return 'request-near-driver-all-event';
-    }
-
-
-    
+    // public function broadcastAs()
+    // {
+    //     return 'topup-request-noti-event';
+    // }
 }

@@ -5,14 +5,14 @@
 			<i class="fa-solid fa-xmark"></i>
 		</button>
 	</div>
-	<div class=" container m-auto px-4 py-4 text-center ">
-		<a class="navbar-brand d-none d-sm-inline " href="{{ route('dashboard') }}">
-			<img src="{{ asset('assets/logo/logo.png') }}" alt="SPTS" width="75%" height="auto">
-		</a>
-		<a class="navbar-brand d-sm-none " href="{{ route('dashboard') }}">
-			<img src="{{ asset('assets/logo/logo.png') }}" alt="" width="45%" height="auto">
-		</a>
-	</div>
+    <div class=" container m-auto px-4 py-4 text-center ">
+        <a class="navbar-brand d-none d-sm-inline " href="{{ route('dashboard') }}">
+            <img src="{{ asset('assets/logo/logo.png') }}" alt="SPTS" width="75%" height="auto">
+        </a>
+        <a class="navbar-brand d-sm-none " href="{{ route('dashboard') }}">
+            <img src="{{ asset('assets/logo/logo.png') }}" alt="" width="45%" height="auto">
+        </a>
+    </div>
 	<div class="">
 		<ul class="nav nav-pills flex-column align-content-sm-stretch justify-content-center">
 			<li class="nav-item">
@@ -23,7 +23,7 @@
 							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path fill-rule="evenodd" clip-rule="evenodd"
 									d="M2 13.25H9.5C10.1875 13.25 10.75 12.6875 10.75 12V2C10.75 1.3125 10.1875 0.75 9.5 0.75H2C1.3125 0.75 0.75 1.3125 0.75 2V12C0.75 12.6875 1.3125 13.25 2 13.25ZM2 23.25H9.5C10.1875 23.25 10.75 22.6875 10.75 22V17C10.75 16.3125 10.1875 15.75 9.5 15.75H2C1.3125 15.75 0.75 16.3125 0.75 17V22C0.75 22.6875 1.3125 23.25 2 23.25ZM14.5 23.25H22C22.6875 23.25 23.25 22.6875 23.25 22V12C23.25 11.3125 22.6875 10.75 22 10.75H14.5C13.8125 10.75 13.25 11.3125 13.25 12V22C13.25 22.6875 13.8125 23.25 14.5 23.25ZM13.25 2V7C13.25 7.6875 13.8125 8.25 14.5 8.25H22C22.6875 8.25 23.25 7.6875 23.25 7V2C23.25 1.3125 22.6875 0.75 22 0.75H14.5C13.8125 0.75 13.25 1.3125 13.25 2Z"
-									fill="#FABA1F" />
+									fill="#fff" />
 							</svg>
 						@else
 							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -107,8 +107,8 @@
 							<a class="nav-link  @if (url()->current() === route('customers.create')) active @endif " href="{{ route('customers.create') }}"
 								href="{{ route('users.create') }}">Add Customer</a>
 						</li>
-						
-						
+
+
 					</ul>
 				</div>
 			</li>
@@ -229,6 +229,14 @@
 						<i class="fa-solid fa-paper-plane"></i>
 					</span>
 					<span class="d-inline d-sm-none d-lg-inline">Notification</span>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ route('map.index') }}">
+					<span class="pe-3" style="margin-left: -3px">
+						<i class="fas fa-map-marked-alt"></i>
+					</span>
+					<span class="d-inline d-sm-none d-lg-inline">Map</span>
 				</a>
 			</li>
 		</ul>

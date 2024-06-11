@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\CustomNotificationController;
 use App\Http\Controllers\Backend\FeeController;
 use App\Http\Controllers\Backend\IncomeSummaryController;
+use App\Http\Controllers\Backend\MapController;
 use App\Http\Controllers\Backend\SystemController;
 use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\TripController;
@@ -99,7 +100,7 @@ Route::middleware(['auth', 'role:admin|staff'])->group(function () {
     Route::post('/customers/update/{id}', [CustomerController::class, 'update'])->name('customers.update');
     Route::get('/customers/destroy/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
     Route::get('/customers/search', [CustomerController::class, 'search'])->name('customers.search');
-    Route::post('/customers/profile/{user}', [CustomerController::class, 'profile'])->name('customers.update');
+    // Route::post('/customers/profile/{user}', [CustomerController::class, 'profile'])->name('customers.update');
     Route::get('/customers/show/{id}', [CustomerController::class, 'show'])->name('customers.show');
 
 
@@ -117,18 +118,12 @@ Route::middleware(['auth', 'role:admin|staff'])->group(function () {
     Route::get('/trips/search/canceled', [TripController::class, 'searchCanceled'])->name('trips.search.canceled');
     
 
+    // google map 
+    Route::get('/map',[MapController::class,'index'])->name('map.index');
 
-    // Broadcast::channel('request-near-driver-all-channel', function ($user) {
-    //     // Return true to authorize any user to listen to this channel
-    //     return true;
-    // });
+  
 });
-// Route::get('/pusher',function(){
-//     return view('pusher');
-// });
 
-// Route::post('/send-otp', [UserController::class, 'sendOTP']);
-// Route::get('/send-otp', [UserController::class, 'sendOTP']);
 
 Route::get('customer/app/download',[AppDownloadController::class,'customerDownload'])->name('customer.app');
 Route::get('driver/app/download',[AppDownloadController::class,'driverDownload'])->name('driver.app');
