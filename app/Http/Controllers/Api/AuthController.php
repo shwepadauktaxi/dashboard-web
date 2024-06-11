@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
 
-    
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:users,phone|max:255',
@@ -52,7 +52,7 @@ class AuthController extends Controller
             'type'  =>'nullable'
         ]);
 
-        
+
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->all()], 422);
         }
@@ -64,7 +64,10 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'remember_token' => Str::random(10)
         ])->assignRole('user');
-        $user->driver_id = sprintf('%04d', $user->id - 1);
+        // $user->driver_id = sprintf('%04d', $user->id - 1);
+        $lastUser = User::orderBy('id', 'desc')->first();
+        $nextId = $lastUser ? $lastUser->id + 1 : 1;
+        $user->driver_id = 'KTM-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
         $user->fill($request->only(['birth_date', 'address', 'nrc_no', 'driving_license']));
 
         $user->save();
@@ -89,14 +92,14 @@ class AuthController extends Controller
         }
         if ($request->hasFile('vehicle_image')) {
             $vehicleImage = $request->file('vehicle_image');
-            $vehicleImageName = time() . '.' . $vehicleImage->getClientOriginalExtension();
+            $vehicleImageName =  uniqid() . '.' . $vehicleImage->getClientOriginalExtension();
             // $vehicleImage->storeAs('uploads/images/vehicles', $vehicleImageName);
             Storage::disk('s3')->put($vehicleImageName, file_get_contents($vehicleImage));
 
             $vehicle->vehicle_image_url = $vehicleImageName;
-            
 
-            
+
+
         }
         $vehicle->save();
 
@@ -106,72 +109,72 @@ class AuthController extends Controller
         // upload and save front NRC image
         if ($request->hasFile('front_nrc_image')) {
             $frontNrcImage = $request->file('front_nrc_image');
-            $frontNrcImageName = time() . '.' . $frontNrcImage->getClientOriginalExtension();
+            $frontNrcImageName = uniqid() . '_' . $frontNrcImage->getClientOriginalName();
             // $frontNrcImage->storeAs('uploads/images/front_nrcs', $frontNrcImageName);
             Storage::disk('s3')->put($frontNrcImageName, file_get_contents($frontNrcImage));
 
             $userImage->front_nrc_image = $frontNrcImageName;
-           
+
 
         }
 
         // upload and save back NRC image
         if ($request->hasFile('back_nrc_image')) {
             $backNrcImage = $request->file('back_nrc_image');
-            $backNrcImageName = time() . '.' . $backNrcImage->getClientOriginalExtension();
+            $backNrcImageName =  uniqid()  . '.' . $backNrcImage->getClientOriginalExtension();
             // $backNrcImage->storeAs('uploads/images/back_nrcs', $backNrcImageName);
             Storage::disk('s3')->put($backNrcImageName, file_get_contents($backNrcImage));
 
             $userImage->back_nrc_image = $backNrcImageName;
-          
+
 
         }
 
         // upload and save front license image
         if ($request->hasFile('front_license_image')) {
             $frontLicenseImage = $request->file('front_license_image');
-            $frontLicenseImageName = time() . '.' . $frontLicenseImage->getClientOriginalExtension();
+            $frontLicenseImageName =  uniqid()  . '.' . $frontLicenseImage->getClientOriginalExtension();
             // $frontLicenseImage->storeAs('uploads/images/front_licenses', $frontLicenseImageName);
             Storage::disk('s3')->put($frontLicenseImageName, file_get_contents($frontLicenseImage));
 
             $userImage->front_license_image = $frontLicenseImageName;
-            
+
 
         }
 
         // upload and save back license image
         if ($request->hasFile('back_license_image')) {
             $backLicenseImage = $request->file('back_license_image');
-            $backLicenseImageName = time() . '.' . $backLicenseImage->getClientOriginalExtension();
+            $backLicenseImageName =  uniqid()  . '.' . $backLicenseImage->getClientOriginalExtension();
             // $backLicenseImage->storeAs('uploads/images/back_licenses', $backLicenseImageName);
             Storage::disk('s3')->put($backLicenseImageName, file_get_contents($backLicenseImage));
             $userImage->back_license_image = $backLicenseImageName;
-          
+
 
         }
 
          // upload and save profile  image
          if ($request->hasFile('profile_image')) {
             $profileImage = $request->file('profile_image');
-            $profileImageName = time() . '.' . $profileImage->getClientOriginalExtension();
+            $profileImageName =  uniqid()  . '.' . $profileImage->getClientOriginalExtension();
             // $profileImage->storeAs('uploads/images/profiles', $profileImageName);
-    
+
             Storage::disk('s3')->put($profileImageName, file_get_contents($profileImage));
             $userImage->profile_image = $profileImageName;
-          
+
         }
-      
+
 
         // save user images to database
         $userImage->save();
 
-        $token = $user->createToken($user->email . '_' . now(), [$user->roles->first()->name]);
+        $token = $user->createToken($user->phone . '_' . now(), [$user->roles->first()->name]);
 
         return response(['token' => $token], 200);
     }
 
 
-    // driver login 
+    // driver login
     public function login(Request $request)
     {
         $validator = Validator::make(
@@ -190,12 +193,12 @@ class AuthController extends Controller
             if($user->status === 'active'){
                if($user->roles->contains('name', 'user')){
                 if (Hash::check($request->password, $user->password)) {
-                    $token = $user->createToken($user->email . '_' . now(), [$user->roles->first()->name]);
+                    $token = $user->createToken($user->phone . '_' . now(), [$user->roles->first()->name]);
                     $user->device_token = $request->fcm_token;
                     $user->save();
                     return response()->json(['token' =>  $token, 'status' => $user->status], 200);
-    
-                    
+
+
                 } else {
                     $response = ["message" => ["Password mismatch"]];
                     return response($response, 422);
@@ -214,7 +217,7 @@ class AuthController extends Controller
         }
     }
 
-    // customer login 
+    // customer login
 
     public function customerLogin(Request $request)
     {
@@ -234,12 +237,12 @@ class AuthController extends Controller
             if($user->status === 'active'){
                if($user->roles->contains('name', 'customer')){
                 if (Hash::check($request->password, $user->password)) {
-                    $token = $user->createToken($user->email . '_' . now(), [$user->roles->first()->name]);
+                    $token = $user->createToken($user->phone . '_' . now(), [$user->roles->first()->name]);
                     $user->device_token = $request->fcm_token;
                     $user->save();
                     return response()->json(['token' =>  $token, 'status' => $user->status], 200);
-    
-                    
+
+
                 } else {
                     $response = ["message" => ["Password mismatch"]];
                     return response($response, 422);
@@ -259,7 +262,7 @@ class AuthController extends Controller
     }
 
 
-    // log out 
+    // log out
 
     public function logout(Request $request)
     {
@@ -269,7 +272,7 @@ class AuthController extends Controller
     }
 
 
-    // customer register 
+    // customer register
     public function cusregister(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -278,7 +281,7 @@ class AuthController extends Controller
             'email' => 'nullable|email|unique:users,email|max:255',
             'birth_date' => 'nullable',
             'address' => 'nullable|string|max:255',
-            
+
         ]);
 
         if ($validator->fails()) {
@@ -297,9 +300,9 @@ class AuthController extends Controller
         $user->save();
 
         $otp = mt_rand(100000, 999999);
-        
+
         // Send OTP via SMS
-        
+
         $phoneNumber = $request->phone;
         // dd($request);
         $success = $this->smsService->sendOTP($phoneNumber, $otp);
@@ -317,7 +320,7 @@ class AuthController extends Controller
             $UserOTP->save();
 
             // OTP sent successfully
-            $token = $user->createToken($user->email . '_' . now(), [$user->roles->first()->name]);
+            $token = $user->createToken($user->phone . '_' . now(), [$user->roles->first()->name]);
 
             return response(['token' => $token,'OTP'=>$otp], 200);
         } else {
@@ -325,14 +328,14 @@ class AuthController extends Controller
             return response()->json(['message' => 'Failed to send OTP'], 200);
         }
 
- 
+
 
     }
 
-  
+
     public function sendOTP(Request $request){
 
-      
+
         $user = User::where('phone', $request->phone)->first();
         $phoneNumber = $user->phone;
         $userOtp = $user->userotp;
@@ -345,10 +348,10 @@ class AuthController extends Controller
             if (!$user->phone) {
                 return response()->json(['message' => 'Phone number not found'], 200);
             }
-            
+
         if($userOtp){
 
-       
+
             $userOtp->otp_code = $otp;
             $userOtp->expire_at = $expire_at;
             $userOtp->save();
@@ -379,35 +382,81 @@ class AuthController extends Controller
                 return response()->json(['message' => 'Failed to send OTP'], 500);
             }
 
-      
+
     }
 
 
     public function verifyOtp(Request $request){
-        
+
         $user = User::where('phone', $request->phone)->first();
-        $phoneNumber = $user->phone;
-        $userOtp = $user->userotp;
-       
 
-        $now = now();
-        // $now = Carbon::now();
-        if(($userOtp->otp_code === $request->otp_code &&  $now->isBefore($userOtp->expire_at) ) || $request->otp_code === $phoneNumber){
 
-            $user->status = 'active';
-            
-            $user->save();
-            $userOtp->verified_phone = $now;
-            $userOtp->save();
+        if($user){
 
-            $token = $user->createToken($user->email . '_' . now(), [$user->roles->first()->name]);
+            $phoneNumber = $user->phone;
+            $userOtp = $user->userotp;
 
-            return response(['token' => $token], 200);
+            $now = now();
+            // $now = Carbon::now();
+            if(($userOtp->otp_code === $request->otp_code &&  $now->isBefore($userOtp->expire_at) ) || $request->otp_code === $phoneNumber){
 
+
+
+                $user->save();
+                $userOtp->verified_phone = $now;
+                $userOtp->save();
+
+                $token = $user->createToken($user->email . '_' . now(), [$user->roles->first()->name]);
+
+
+
+                return response(['token' =>  $token, 'status' => $user->status], 200);
+
+            }
+
+            return response()->json(['message' => 'Failed to  OTP'], 401);
+
+        }else {
+            $response = ["message" => ['User does not exist']];
+            return response($response);
         }
 
-        return response()->json(['message' => 'Failed to  OTP'], 401);
 
 
     }
+
+
+    public function checkPhone(Request $request){
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required|max:15',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->all()], 422);
+        }
+
+        $user = User::where('phone', $request->phone)->first();
+
+        if($user){
+            return response()->json(['status'=>$user->status]);
+
+        }else{
+            return response()->json(['status'=>"new user"]);
+        }
+
+
+    }
+
+//    public function refresh(Request $request)
+//    {
+//        $user = Auth::user();
+//
+//        $tokenResult = $user->createToken($user->phone . '_' . now(), [$user->roles->first()->name]);
+//        $token = $tokenResult->accessToken;
+//
+//        return response()->json([
+//            'token' => $token
+//        ], 200);
+//    }
 }

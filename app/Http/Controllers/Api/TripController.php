@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\System;
 use App\Models\Transaction;
-use App\Events\TripCreated;
-use App\Events\DriverUpdated;
+use App\Events\DriverTopList;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -31,33 +30,36 @@ class TripController extends Controller
 
         $trip = Trip::where('driver_id',$driverid)->where('status','accepted')->get();
 
-    
+
 
         return response()->json($trip);
     }
 
 
-    //trip end 
+    //trip end
     public function store(Request $request)
     {
 
-    
+
+
         $validator = Validator::make($request->all(), [
             'distance' => 'required|numeric',
             'duration' => 'required|string',
             'waiting_time' => 'required|string',
-            'normal_fee' => 'required|numeric',
-            'waiting_fee' => 'required|numeric',
-            'extra_fee' => 'required|numeric',
+            // 'normal_fee' => 'required|numeric',
+            // 'waiting_fee' => 'required|numeric',
+            // 'extra_fee' => 'required|numeric',
             'total_cost' => 'required|numeric',
+            'start_lat' => 'required|numeric',
+            'start_lng' => 'required|numeric',
             'end_lat' => 'required|numeric',
             'end_lng' => 'required|numeric',
             // 'status' =>'required',
             'trip_id'=> 'nullable',
             'start_time'=> 'required',
             'end_time'=> 'required',
-            
-            
+
+
         ]);
 
 
@@ -68,7 +70,7 @@ class TripController extends Controller
 
 
         $driver = User::findOrFail(Auth::user()->id);
-    
+
 
     if($driver->available == false || $driver->available == 0){
         $driver->available = true;
@@ -76,7 +78,7 @@ class TripController extends Controller
         $driver->save();
     }
 
-          
+
             if($request->extra_fee_list !== null && $request->extra_fee_list !== "null"){
                 $array = explode(',', $request->extra_fee_list);
                 $fees=  json_encode($array);
@@ -84,13 +86,16 @@ class TripController extends Controller
                 $arr = [];
                 $fees =  json_encode($arr);
             }
+
+
+
         if($request->trip_id == null || $request->trip_id == 'null'){
-            
- 
-            
+
+
+
             $trip = new Trip();
-    
-            
+
+
             $trip->user_id = null;
             $trip->distance = $request->distance;
             $trip->duration = $request->duration;
@@ -98,7 +103,11 @@ class TripController extends Controller
             $trip->normal_fee = $request->normal_fee;
             $trip->waiting_fee = $request->waiting_fee;
             $trip->extra_fee = $request->extra_fee;
-            $trip->total_cost = $request->total_cost;
+            if (!empty($request->total_cost)) {
+                $trip->total_cost = $request->total_cost;
+            }
+            $trip->start_lat = $request->end_lat;
+            $trip->start_lng = $request->end_lng;
             $trip->end_lat = $request->end_lat;
             $trip->end_lng = $request->end_lng;
             $trip->status = "completed";
@@ -110,20 +119,33 @@ class TripController extends Controller
             $trip->end_time = $request->end_time;
             $trip->cartype = $request->cartype;
             $trip->extra_fee_list = $fees;
-            
-    
+            $trip->polyline = json_encode($request->polyline);
+
+
 
             $system =  System::find(1);
-            $total = $request->total_cost; // Total amount
-            // $percentage = 10; // Percentage to calculate
-            
-          
+
+
+
+            $totalCost = $request->total_cost; // Total amount
+            $percentage = $system->commission_fee; // Percentage to calculate 3
+
+            if($percentage >= 100){
+                $percentageAmount =$percentage ;
+            }else{
+                $percentageAmount = ($totalCost * $percentage) / 100;
+            }
+
+
+
             // Update user's balance
-            $driver->balance -= $system->commission_fee;
-    
+            $driver->balance -= $percentageAmount;
+
+
+            $trip->commission_fee = $percentageAmount;
             $driver->save();
-    
-    
+
+
             // Create a new transaction record
             Transaction::create([
                 'user_id' => $trip->driver_id,
@@ -135,6 +157,8 @@ class TripController extends Controller
             $system->balance += $system->commission_fee;
             $system->save();
             $trip->save();
+
+
             $extra_fee_ids = json_decode($trip->extra_fee_list);
 
             // Fetch fee details based on decoded IDs
@@ -145,15 +169,29 @@ class TripController extends Controller
             }else{
                 $datafee = $fees;
             }
-            
+
             $trip->extra_fee_list = $datafee;
+
+            // $drivers = User::role('user')->with(['trips' => function ($query) {
+            //     $query->whereBetween('created_at', [Carbon::now()->startOfWeek(),Carbon::now()->endOfWeek()]);
+            // }])
+
+            // ->get();
+
+
+            // event(new DriverTopList($drivers));
+
+
             return response()->json($trip);
+
+
+
 
 
 
         }else{
                     $trip = Trip::findOrFail($request->trip_id);
-            
+
                     if (!$trip) {
                         return response()->json(['error' => 'Trip not found'], 404);
                     }
@@ -173,8 +211,8 @@ class TripController extends Controller
             $trip->driver_id = $driver->id;
             $trip->start_time = $request->start_time;
             $trip->end_time = $request->end_time;
-            $trip->extra_fee_list = json_encode($request->extra_fee_list);
-            
+            $trip->extra_fee_list = $fees;
+            $trip->polyline = json_encode($request->polyline);
             $system = System::findOrFail(1);
 
             $initial_fee=0;
@@ -191,23 +229,23 @@ class TripController extends Controller
             }
 
             $trip->initial_fee = $initial_fee;
-    
-           
+
+
             $totalCost = $request->total_cost; // Total amount
             $total = $totalCost + $initial_fee;
             $percentage = $system->order_commission_fee; // Percentage to calculate 10
-            
+
             // Calculate the percentage amount
             // $percentageAmount = ($percentage / 100) * $total;
             $percentageAmount = ($total * $percentage) / 100;
 
-            
+
             // Update user's balance
             $driver->balance -= $percentageAmount;
-    
+
             $driver->save();
-    
-    
+
+
             // Create a new transaction record
             Transaction::create([
                 'user_id' => $trip->driver_id,
@@ -219,7 +257,7 @@ class TripController extends Controller
             $system->balance += $percentageAmount;
             $system->save();
             $trip->save();
-            
+
 
 
 
@@ -228,33 +266,33 @@ class TripController extends Controller
             // ->with(['trips' => function ($query) {
             //     $query->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
             // },'userImage'])
-           
+
             // ->withCount(['trips' => function ($query) {
             //     $query->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
             //     ->where('status','completed');
-                
+
             // }])->orderBy('trips_count','desc')
-           
+
             // ->get();
             // event(new DriverUpdated($drivers));
-          
-           
+
+
             // $fee = $trip->exterfees;
             return response()->json($trip);
 
 
                 }
 
-                
-            
-                   
-           
+
+
+
+
     }
 
     public function show($id)
     {
 
-        
+
         $trip = Trip::find($id);
 
         if (!$trip) {
@@ -326,20 +364,20 @@ class TripController extends Controller
 
         $validator = Validator::make($request->all(), [
             'status' => 'required',
-            
+
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
-        
+
         $trip = Trip::findOrFail($id);
 
         $trip->status = $request->status;
         $trip->save();
-        
+
         $driver = User::findOrFail($trip->driver_id);
-        
+
 
         return response()->json($trip);
 
@@ -353,12 +391,12 @@ class TripController extends Controller
     //     // Broadcast the new trip data using Laravel WebSockets
     //     // broadcast(new TripCreated($trip))->toOthers();
 
-        
+
 
     //     return response()->json($trip, 201);
     // }
 
 
 
-   
+
 }

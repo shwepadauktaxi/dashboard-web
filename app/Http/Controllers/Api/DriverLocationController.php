@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\DriverEvent;
-use App\Events\DriverLocationEvent;
 use App\Events\TripNearDriverAllEvent;
 use App\Http\Controllers\Controller;
 use App\Models\CarType;
@@ -117,7 +115,7 @@ class DriverLocationController extends Controller
             'lat'=>$request->lat,
             'lng' =>$request->lng
         ];
-        broadcast(new DriverLocationEvent($user));
+        
 
         return response()->json(['driver'=>$user ,'message' => 'Driver updated successfully'], 200);
     }

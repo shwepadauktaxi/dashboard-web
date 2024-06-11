@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class DriverUpdated implements ShouldBroadcast
+class DriverTopList implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,11 +19,16 @@ class DriverUpdated implements ShouldBroadcast
      *
      * @return void
      */
-    public $driver;
 
-    public function __construct($driver)
+     public $drivers;
+    public function __construct($drivers)
     {
-        $this->driver = $driver;
+        $this->drivers = $drivers->map(function ($driver) {
+            return [
+                'name' => $driver->name,
+                'phone' => $driver->phone
+            ];
+        });
     }
 
     /**
@@ -33,11 +38,13 @@ class DriverUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('drivers-count-channel');
+        // return new PrivateChannel('channel-name');
+
+        return new Channel('driver-list-channel');
     }
 
     public function broadcastAs()
     {
-        return 'drivers-count-event';
+        return 'driver-list-event';
     }
 }

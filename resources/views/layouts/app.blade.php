@@ -7,10 +7,10 @@
 	<!-- CSRF Token -->
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>{{ config('app.name', 'SPD Kilo Taxt') }}</title>
-	<link href="{{ asset('assets/icon/apple-touch-icon.png') }}" rel="apple-touch-icon" sizes="180x180">
-	<link type="image/png" href="{{ asset('assets/icon/favicon-32x32.png') }}" rel="icon" sizes="32x32">
-	<link type="image/png" href="{{ asset('assets/icon/favicon-16x16.png') }}" rel="icon" sizes="16x16">
+	<title>{{ config('app.name', 'kilo taxi') }}</title>
+    <link href="{{ asset('assets/icon/apple-touch-icon.png') }}" rel="apple-touch-icon" sizes="180x180">
+    <link type="image/png" href="{{ asset('assets/icon/favicon-32x32.png') }}" rel="icon" sizes="32x32">
+    <link type="image/png" href="{{ asset('assets/icon/favicon-16x16.png') }}" rel="icon" sizes="16x16">
 	<link href="{{ asset('assets/icon/site.webmanifest') }}" rel="manifest">
 	<style>
 		#loader {
@@ -26,9 +26,11 @@
 	<link href="//fonts.gstatic.com" rel="dns-prefetch">
 	<link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
+
 	<!-- Scripts -->
 	<link href="{{ mix('css/app.css') }}" rel="stylesheet">
-	<script src="{{ mix('js/app.js') }}" defer></script>
+
+
 	@stack('style')
 </head>
 
@@ -40,7 +42,17 @@
 			@include('layouts.body')
 		</div>
 	</div>
-	<script>
+
+
+
+
+
+    <script src="{{ mix('js/app.js') }}" defer></script>
+    {{-- jquery --}}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+    <script>
 		let loader = document.getElementById("loader");
 		window.addEventListener("load", function() {
 			loader.style.display = "none";
@@ -62,7 +74,10 @@
 		};
 
 	</script>
-	@stack('script')
+
+
+
+    @stack('script')
 </body>
 
 </html>
