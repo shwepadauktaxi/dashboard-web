@@ -24,7 +24,7 @@ class SMSService
             ],
             'json' => [
                 'to' => $phoneNumber,
-                'message' => "OTP code for Kilo Taxi Myanmar is $otp",
+                'message' => "OTP code for ".env('APP_NAME')." is $otp",
                 'sender' => $senderName,
             ]
         ]);
