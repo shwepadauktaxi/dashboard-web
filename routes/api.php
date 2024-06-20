@@ -43,7 +43,6 @@ Route::middleware(['auth:sanctum'])->group(callback: function () {
     // our routes to be protected will go in here
     Route::post('/logout', [AuthController::class, 'logout']);
 
-//    Route::post('refresh', [AuthController::class, 'refresh']);
 
 
     //routes for user
@@ -102,8 +101,8 @@ Route::middleware(['auth:sanctum'])->group(callback: function () {
 
 
     // booking
-    // Route::get('customer/trip/data',[CustromerTripController::class,'index']);
-    // Route::apiResource('/customer/trip', CustromerTripController::class, array("as" => "api"));//trip create and trip get custromer
+     Route::get('customer/trip/data',[CustromerTripController::class,'index']);
+     Route::apiResource('/customer/trip', CustromerTripController::class, array("as" => "api"));//trip create and trip get custromer
     Route::post('customer/trip/update/{id}',[CustromerTripController::class,'update']);
     Route::get('driver/search/trip/{id}',[DriverSearchController::class,'searchTrip']);
     Route::post('customer/booking',[CustromerTripController::class,'store']);
@@ -120,6 +119,7 @@ Route::middleware(['auth:sanctum'])->group(callback: function () {
     Route::post('driver/cancel/search/driver',[DriverSearchController::class,'drivercancleanotherdriver']);
     Route::post('/driver/trip/end/{id}',[TripStatusController::class,'end']);
     Route::get('/driver/trip/cash/{id}',[TripStatusController::class,'cash']);
+//    Route::post('refresh', [AuthController::class, 'refresh']);
 
 
 
