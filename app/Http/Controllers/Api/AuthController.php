@@ -48,7 +48,7 @@ class AuthController extends Controller
             'front_license_image' => 'nullable|image',
             'back_license_image' => 'nullable|image',
             'vehicle_image' => 'nullable|image',
-            'profile_image' => 'nullable|image',
+            'profile_image' =>'nullable|image|max:5120',
             'type'  =>'nullable'
         ]);
 
@@ -70,7 +70,7 @@ class AuthController extends Controller
         $user->driver_id = 'SPTS-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
         $user->fill($request->only(['birth_date', 'address', 'nrc_no', 'driving_license']));
 
-        $user->save();
+
 
         $vehicle = new Vehicle();
         $vehicle->user_id = $user->id;
@@ -155,19 +155,27 @@ class AuthController extends Controller
 
          // upload and save profile  image
          if ($request->hasFile('profile_image')) {
-            $profileImage = $request->file('profile_image');
-            $profileImageName =  uniqid()  . '.' . $profileImage->getClientOriginalExtension();
-            // $profileImage->storeAs('uploads/images/profiles', $profileImageName);
 
-            Storage::disk('s3')->put($profileImageName, file_get_contents($profileImage));
-            $userImage->profile_image = $profileImageName;
+             $profileImage = $request->file('profile_image');
+
+
+
+             // Generate a unique name for the file based on user's NRC number and extension
+             $profileImageName = uniqid() .' .'. $profileImage->getClientOriginalExtension();
+
+             // Store the file in AWS S3 bucket
+             Storage::disk('s3')->put($profileImageName, file_get_contents($profileImage));
+
+             // Assuming $userImage is your user model instance, update the profile_image attribute
+             $userImage->profile_image = $profileImageName;
+             $userImage->save();
 
         }
 
 
         // save user images to database
         $userImage->save();
-
+        $user->save();
         $token = $user->createToken($user->phone . '_' . now(), [$user->roles->first()->name]);
 
         return response(['token' => $token], 200);
@@ -460,3 +468,6 @@ class AuthController extends Controller
 //        ], 200);
 //    }
 }
+
+
+

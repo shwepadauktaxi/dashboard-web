@@ -84,7 +84,7 @@ Route::middleware(['auth:sanctum'])->group(callback: function () {
     Route::get('extra-fee',[TripStatusController::class,'extraFee']);
     Route::post('driver/available/update', [DriverLocationController::class, 'driverAvailableUpdate']);
     Route::get('search/trip/{id}',[DriverSearchController::class,'searchTripId']);
-    Route::post('/driver/trip/start/{id}',[TripStatusController::class,'start']); //start trip
+//    Route::post('/driver/trip/start/{id}',[TripStatusController::class,'start']); //start trip
     Route::get('/total/price-and-trip/{range}',[UserController::class,'totalTripandPrice']);//total trip count and price
 
 
@@ -92,7 +92,7 @@ Route::middleware(['auth:sanctum'])->group(callback: function () {
     Route::get('/car/type',[DriverLocationController::class,'cartype']);
     Route::get('/fee', [FeeController::class, 'index']);
     Route::apiResource('/trip', TripController::class, array("as" => "api")); //trip post  end  get
-    Route::post('/trip/start', [TripController::class, 'tripStart']);
+    Route::post('/trip/start', [TripController::class, 'tripStart']);//start trip
     Route::post('/near-driver-all',[DriverLocationController::class,'neardriverall']);
 
     Route::post('/trip/driver/update/{id}',[CustromerTripController::class,'tripindriverid']);

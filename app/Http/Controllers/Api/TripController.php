@@ -28,9 +28,12 @@ class TripController extends Controller
     {
         $driverid = $request->driver_id;
 
-        $trip = Trip::where('driver_id',$driverid)->where('status','accepted')->get();
+        $id = Trip::where('driver_id',$driverid)->where('status','accepted')->get();
 
 
+        $trip = Trip::find($id->first()->id);
+        $trip->status = 'driving';
+        $trip->save();
 
         return response()->json($trip);
     }

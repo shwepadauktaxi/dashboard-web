@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class TripStatusController extends Controller
 {
      public function start(Request $request,$id){
-        
+
 
         $validator = Validator::make($request->all(), [
             'distance' => 'required|numeric',
@@ -44,6 +44,7 @@ class TripStatusController extends Controller
         $trip->total_cost = $request->total_cost;
         $trip->end_lat = $request->end_lat;
         $trip->end_lng = $request->start_lng;
+        $trip->status = "driving";
         $trip->created_at = now();
 
         $trip->save();
@@ -58,9 +59,9 @@ class TripStatusController extends Controller
 
         return response()->json([$trip,$driver]);
 
-        
+
      }
-     
+
      public function end(Request $request,$id){
         $validator = Validator::make($request->all(), [
             'distance' => 'required|numeric',
@@ -158,7 +159,7 @@ class TripStatusController extends Controller
         if($trip->driver_id !== null){
             $driver = User::findOrFail($trip->driver_id);
             $trip->driver_id = $driver;
-            
+
             $data = [
                 "id"=> $trip->id,
                 "user_id" => $trip->user_id,
