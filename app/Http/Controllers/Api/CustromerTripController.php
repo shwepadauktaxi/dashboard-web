@@ -23,6 +23,7 @@ class CustromerTripController extends Controller
         $user = Auth::user();
         $trips = Trip::latest()
         ->where('user_id', $user->id)
+        ->whereIn('status', ['completed', 'cancelled'])
         ->join('cartype', 'cartype.id', '=', 'trips.cartype')
         ->orderBy('trips.created_at', 'desc')
         ->select('trips.*', 'cartype.id as cartype_id', 'cartype.type as cartype_type')
@@ -37,7 +38,7 @@ class CustromerTripController extends Controller
         $trip = Trip::findOrFail($id);
         if($trip->driver_id !== null){
             $driver = User::findOrFail($trip->driver_id);
-            
+
             $vehicle = Vehicle::where('user_id',$trip->driver_id )->first();
             $cartype = CarType::where('id',$trip->cartype)->first();
             $data = [
@@ -69,7 +70,7 @@ class CustromerTripController extends Controller
 
         }
         return response()->json($trip);
-       
+
     }
 
     public function tripindriverid(Request $request,$id){
@@ -82,11 +83,11 @@ class CustromerTripController extends Controller
         return response()->json($trip);
 
     }
-   
+
     public function store(Request $request)
     {
 
-        
+
         $validator = Validator::make($request->all(), [
             'distance' => 'required|numeric',
             'duration' => 'required|string',
@@ -109,7 +110,7 @@ class CustromerTripController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        
+
 
         $radius = 2; // Initial radius
         $nearestDriver = $this->searchNearbyDrivers($request,$radius);
@@ -125,8 +126,8 @@ class CustromerTripController extends Controller
             $nearestDriver = $this->searchNearbyDrivers($request,$radius);
         }
         if ($nearestDriver) {
-           
-           
+
+
 
             $trip = new Trip();
                  $trip->user_id = Auth::user()->id;
@@ -145,8 +146,8 @@ class CustromerTripController extends Controller
                 $trip->end_address = $request->end_address;
                 $trip->cartype = $request->cartype;
 
-           
-            
+
+
             $trip->driver_id = $nearestDriver->id;
 
             $system = System::findOrFail(1);
@@ -164,10 +165,10 @@ class CustromerTripController extends Controller
             }
 
             $trip->initial_fee = $initial_fee;
-    
+
             $trip->save();
             $user = User::findOrFail($trip->user_id);
-        
+
             $tripData = [
                 "id" => $trip->id,
                 "user_id" => $user,
@@ -191,7 +192,7 @@ class CustromerTripController extends Controller
                 "created_at" => $trip->created_at,
                 "updated_at" => $trip->updated_at
             ];
-            
+
         $url = 'https://fcm.googleapis.com/fcm/send';
         // $FcmToken = User::whereNotNull('device_token')->pluck('device_token')->all();
         $user = User::where('id', $trip->driver_id)->first();
@@ -203,7 +204,7 @@ class CustromerTripController extends Controller
             "notification" => [
                 "title" => "new Order",
                 "body" =>"new pending order",
-                
+
             ],
             "data" => $tripData
         ];
@@ -236,14 +237,14 @@ class CustromerTripController extends Controller
         // dd($FcmToken);
         return response()->json($tripData);
 
-   
 
-          
+
+
         } else {
             return response()->json(['message' => 'No nearby drivers found'], 404);
         }
 
-        
+
     }
 
     public function update(Request $request, $id)
@@ -311,14 +312,13 @@ class CustromerTripController extends Controller
             'start_lng' => $request->start_lng,
             'end_lat' => $request->end_lat,
             'end_lng' => $request->end_lng,
-            'status' => $request->status,
+
             'driver_id' =>$driver,
             'cartype' =>$request->cartype,
 
-             
+
         ];
 
-        broadcast(new TripEvent($trip));
 
         return response()->json(['trip'=>$trip,'message' => 'Trip updated successfully'], 200);
     }
@@ -346,8 +346,8 @@ class CustromerTripController extends Controller
                 // dd($trip);
                 return response()->json($trip);
             }
-           
-           
+
+
         }
 
          return response('null');
@@ -356,11 +356,11 @@ class CustromerTripController extends Controller
 
 
     private function searchNearbyDrivers($request,$radius){
-        
+
         $latitude = $request->start_lat;
         $longitude = $request->start_lng;
-        
-                
+
+
         $radius = $radius;
         // $cartype = $request->cartype;
         $cartype = intval($request->cartype);
@@ -388,7 +388,7 @@ class CustromerTripController extends Controller
 
         if ($nearbyDriver) {
             return  $nearbyDriver;
-            
+
         }
     }
 }
