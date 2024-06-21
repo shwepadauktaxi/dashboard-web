@@ -293,7 +293,7 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'status' => 'pending',
+            'status' => 'active',
             'remember_token' => Str::random(10)
         ])->assignRole('customer');
         $user->driver_id = sprintf('%04d', $user->id - 1);
