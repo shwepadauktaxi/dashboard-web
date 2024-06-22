@@ -89,13 +89,13 @@ class CustromerTripController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'distance' => 'required|numeric',
-            'duration' => 'required|string',
-            'waiting_time' => 'required|string',
-            'normal_fee' => 'required|numeric',
-            'waiting_fee' => 'required|numeric',
-            'extra_fee' => 'required|numeric',
-            'total_cost' => 'required|numeric',
+//            'distance' => 'required|numeric',
+//            'duration' => 'required|string',
+//            'waiting_time' => 'required|string',
+//            'normal_fee' => 'required|numeric',
+//            'waiting_fee' => 'required|numeric',
+//            'extra_fee' => 'required|numeric',
+//            'total_cost' => 'required|numeric',
             'start_lat' => 'required|numeric',
             'start_lng' => 'required|numeric',
             'end_lat' => 'required|numeric',
@@ -131,9 +131,9 @@ class CustromerTripController extends Controller
 
             $trip = new Trip();
                  $trip->user_id = Auth::user()->id;
-                $trip->distance = $request->distance;
-                $trip->duration = $request->duration;
-                $trip->waiting_time = $request->waiting_time;
+                $trip->distance = 0;
+                $trip->duration = 0;
+                $trip->waiting_time = 0;
                 $trip->normal_fee = $request->normal_fee;
                 $trip->waiting_fee = $request->waiting_fee;
                 $trip->extra_fee = $request->extra_fee;

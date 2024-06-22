@@ -20,19 +20,33 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
 
-    
+
 
     public function profile()
     {
         $user = Auth::user();
-        $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
-        $userImage = $user->userImage;
-        $vehicle = $user->vehicle;
-        $vehicle->type = json_decode($vehicle->type );
-        $transaction = $user->transactions;
-        $trip = $user->trip;
 
-        $notification = $user->notifications;
+        if($user->hasRole('user')){
+            $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
+            $userImage = $user->userImage;
+            $vehicle = $user->vehicle;
+            $vehicle->type = json_decode($vehicle->type );
+            $transaction = $user->transactions;
+            $trip = $user->trip;
+
+            $notification = $user->notifications;
+        }else{
+            $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
+            $userImage = $user->userImage;
+
+
+            $trip = $user->trip;
+
+            $notification = $user->notifications;
+        }
+
+
+
 
         return response()->json(['user' => $user,'url'=>$url, 'success' => true], 200);
     }
@@ -82,14 +96,14 @@ class UserController extends Controller
         }
         // update profile image
         if ($request->hasFile('profile_image')) {
-            
+
             $userImage = $user->userImage;  // Assuming the User model has a relationship to UserImage
-        
+
             // Check if the user's current profile image exists on S3 and delete it
             if ($userImage && !is_null($userImage->profile_image) && Storage::disk('s3')->exists($userImage->profile_image)) {
                 Storage::disk('s3')->delete($userImage->profile_image);
             }
-            
+
             $profileImage = $request->file('profile_image');
             $profileImageName = uniqid() . '_' . $user->nrc_no . '.' . $profileImage->getClientOriginalExtension();
             Storage::disk('s3')->put($profileImageName, file_get_contents($profileImage));
@@ -99,9 +113,9 @@ class UserController extends Controller
 
         // // update front NRC image
         if ($request->hasFile('front_nrc_image')) {
-           
+
             if (Storage::disk('s3')->exists($userImage->front_nrc_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->front_nrc_image);
             }
             $frontNrcImage = $request->file('front_nrc_image');
@@ -113,9 +127,9 @@ class UserController extends Controller
 
         // // update back NRC image
         if ($request->hasFile('back_nrc_image')) {
-           
+
             if (Storage::disk('s3')->exists($userImage->back_nrc_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->back_nrc_image);
             }
             $backNrcImage = $request->file('back_nrc_image');
@@ -127,9 +141,9 @@ class UserController extends Controller
 
         // // update front license image
         if ($request->hasFile('front_license_image')) {
-           
+
             if (Storage::disk('s3')->exists($userImage->front_license_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->front_license_image);
             }
             $backNrcImage = $request->file('front_license_image');
@@ -140,15 +154,15 @@ class UserController extends Controller
         }
         // // update back license image
         if ($request->hasFile('back_license_image')) {
-            
+
             if (Storage::disk('s3')->exists($userImage->back_license_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->back_license_image);
             }
             $backLicenseImage = $request->file('back_license_image');
             $backLicenseImageName = uniqid() . '.' . $backLicenseImage->getClientOriginalExtension();
             Storage::disk('s3')->put($backLicenseImageName, file_get_contents($backLicenseImage));
-          
+
             $userImage->back_license_image = $backLicenseImageName;
             $userImage->save();
         }
@@ -165,7 +179,7 @@ class UserController extends Controller
 
         if ($user->vehicle) {
             $vehicle = Vehicle::where('user_id', $user->id)->first();
-           
+
         } else {
             $vehicle = new Vehicle();
             $vehicle->user_id = $user->id;
@@ -180,9 +194,9 @@ class UserController extends Controller
         if ($request->hasFile('vehicle_image')) {
 
             $oldImage = $vehicle->vehicle_image_url; //get old image by ID
-            
+
             if (Storage::disk('s3')->exists($oldImage)) {
-           
+
                 Storage::disk('s3')->delete($oldImage);
             }
             $vehicleImage = $request->file('vehicle_image');
@@ -192,10 +206,10 @@ class UserController extends Controller
 
             $vehicle->vehicle_image_url = $vehicleImageName;
         }
-        
+
         $vehicle->save();
         $vehicle->type = json_decode($vehicle->type);
-        
+
         return response()->json(['user' => $user, 'status' => 'User updated successfully', 'success' => true], 200);
     }
 
@@ -204,37 +218,37 @@ class UserController extends Controller
         if ($user->has('userImage')) {
             $userImage = $user->userImage;
             if (Storage::disk('s3')->exists($userImage->profile_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->profile_image);
             }
-           
+
             if (Storage::disk('s3')->exists($userImage->front_nrc_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->front_nrc_image);
             }
-            
+
             if (Storage::disk('s3')->exists($userImage->back_nrc_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->back_nrc_image);
             }
-            
+
             if (Storage::disk('s3')->exists($userImage->front_license_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->front_license_image);
             }
-          
-                   
+
+
             if (Storage::disk('s3')->exists($userImage->back_license_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->back_license_image);
             }
         }
 
         if (isset($user->vehicle)) {
             $vehicle = Vehicle::find($user->vehicle->id);
-            
+
             if (Storage::disk('s3')->exists($vehicle->vehicle_image_url)) {
-           
+
                 Storage::disk('s3')->delete($vehicle->vehicle_image_url);
             }
             $vehicle->delete();
@@ -263,14 +277,14 @@ class UserController extends Controller
     public function userTrip()
     {
         $user = Auth::user();
-       
+
         // $trips = Trip::where('driver_id',$user->id)
         //                 ->whereNot('status','pending')
         //                 ->whereNot('status','accepted')
         //                 ->whereNot('status','canceled')
         //                 ->latest()
         //                 ->get();
-        
+
         $trips = Trip::where('driver_id', $user->id)
             ->whereNotIn('status', ['pending', 'accepted', 'canceled'])
             ->latest()
@@ -314,7 +328,7 @@ class UserController extends Controller
 
                     'created_at' => Carbon::parse($trip->created_at)->format('Y-m-d h:i A'),
                     'updated_at' => Carbon::parse($trip->updated_at)->format('Y-m-d h:i A'),
-                   
+
                 ];
             });
         return response()->json($trips, 200);
@@ -342,10 +356,10 @@ class UserController extends Controller
             'birth_date' => 'nullable',
             'address' => 'nullable|string|max:255',
             'profile_image' => 'nullable|image',
-            
+
         ]);
 
-       
+
         if ($validator->fails()) {
             return response(['message' => $validator->errors()], 422);
         }
@@ -355,7 +369,7 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        
+
         $user->save();
 
         if ($user->userImage) {
@@ -371,7 +385,7 @@ class UserController extends Controller
             // }
 
             if (Storage::disk('s3')->exists($userImage->profile_image)) {
-           
+
                 Storage::disk('s3')->delete($userImage->profile_image);
             }
             $profileImage = $request->file('profile_image');
@@ -382,7 +396,7 @@ class UserController extends Controller
             $userImage->save();
         }
 
-       
+
         return response()->json(['user' => $user, 'status' => 'User updated successfully', 'success' => true], 200);
     }
 
@@ -390,7 +404,7 @@ class UserController extends Controller
         $user = Auth::user();
         $trips = $user->trips;
 
-        
+
 
         if ($range === 'day') {
             $startDate = Carbon::now()->startOfDay();
@@ -407,7 +421,7 @@ class UserController extends Controller
                 'total_amount' => $totalAmount,
             ]);
 
-            
+
         } elseif ($range === 'week') {
             $startDate = Carbon::now()->startOfWeek();
             $endDate = Carbon::now()->endOfWeek();
@@ -426,7 +440,7 @@ class UserController extends Controller
             $startDate = Carbon::now()->startOfMonth();
             $endDate = Carbon::now()->endOfMonth();
 
-            
+
             // Get trips for the current day
             $todayTrips = $trips->whereBetween('created_at', [$startDate, $endDate]);
 
@@ -442,7 +456,7 @@ class UserController extends Controller
             $startDate = Carbon::now()->startOfYear();
             $endDate = Carbon::now()->endOfYear();
 
-            
+
             // Get trips for the current day
             $todayTrips = $trips->whereBetween('created_at', [$startDate, $endDate]);
 
@@ -504,24 +518,24 @@ class UserController extends Controller
         //         'total_trips' => $authUser->trips->where('status','completed')->count(),
         //         'profile_image' =>optional($authUser->userImage)->profile_image,
         //         'rank' => $authUserRank,
-                
+
         //     ],
         //     'top_drivers' => $topDrivers,
         //     'url'=>'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/',
         // ]);
 
-        
+
         // $startDate = Carbon::now()->startOfYear();
         // $endDate = Carbon::now()->endOfYear();
-        
+
         // // Fetch trips with completed status within the date range
         // $trips = Trip::
         //     whereBetween('created_at', [$startDate, $endDate])
         //     ->orderBy('created_at')
         //     ->get();
-        
+
         // $collection = collect($trips);
-        
+
         // // Group trips by month
         // $trips = $collection->groupBy(function ($trip) {
         //     return Carbon::parse($trip->created_at)->format('Y-m');
@@ -529,20 +543,20 @@ class UserController extends Controller
         //     // Group by driver_id and get drivers with total trips
         //     $drivers = $group->groupBy('driver_id')->map(function ($driverTrips, $driverId) {
         //         $user = User::find($driverId);
-                
+
         //         // Check if the user exists and has the 'user' role
         //         if ($user && $user->roles()->where('name', 'user')->exists()) {
         //             return [
         //                 'driver_id' => $user->driver_id,
         //                 'name' => $user->name,
-                        
+
         //                 'total_trips' => $driverTrips->count(),
         //                 'profile_image' => optional($user->userImage)->profile_image,
         //             ];
         //         }
         //         return null;
         //     })->filter()->sortByDesc('total_trips')->values(); // Sort and re-index
-        
+
         //     // Add ranking to drivers
         //     $rankedDrivers = $drivers->map(function ($driver, $index) {
         //         $driver['rank'] = $index + 1; // Add rank based on index
@@ -553,27 +567,27 @@ class UserController extends Controller
         //     $authUserRank = $rankedDrivers->firstWhere('driver_id', $authUser->driver_id);
 
         //     $auth = [
-               
+
         //         'driver_id' => $authUser->driver_id,
         //         'name' => $authUser->name,
         //         'total_trips' => $authUser->trips->where('status','completed')->count(),
         //         'profile_image' =>optional($authUser->userImage)->profile_image,
         //         'auth_user_rank' => $authUserRank ? $authUserRank['rank'] : null,
-                
+
         //     ];
-             
-        
+
+
         //     return [
         //         'date' => $group->first()->created_at->format('Y F'),
         //         'authuser'=> $auth,
         //         'top_list' => $rankedDrivers->take(10),
         //     ];
         // });
-        
-     
+
+
         // return response()->json($trips);
-        
-        
+
+
 
 
 
@@ -634,7 +648,7 @@ $trips = $collection->groupBy(function ($trip) {
 
 return response()->json($trips);
 
-        
+
     }
-    
+
 }

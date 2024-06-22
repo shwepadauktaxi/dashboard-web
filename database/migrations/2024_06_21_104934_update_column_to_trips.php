@@ -29,3 +29,6 @@ return new class extends Migration
         DB::statement("ALTER TABLE trips MODIFY COLUMN status ENUM('pending','driving', 'accepted', 'canceled', 'completed') DEFAULT 'pending'");
     }
 };
+
+
+//composer require doctrine/dbal:^3.0
