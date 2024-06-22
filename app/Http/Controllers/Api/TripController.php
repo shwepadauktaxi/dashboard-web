@@ -57,7 +57,7 @@ class TripController extends Controller
             'start_lng' => 'required|numeric',
             'end_lat' => 'required|numeric',
             'end_lng' => 'required|numeric',
-             'status' =>'required',
+//             'status' =>'required',
             'trip_id'=> 'nullable',
             'start_time'=> 'required',
             'end_time'=> 'required',

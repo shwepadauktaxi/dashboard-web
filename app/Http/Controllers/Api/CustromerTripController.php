@@ -135,9 +135,9 @@ class CustromerTripController extends Controller
                 $trip->duration = 0;
                 $trip->waiting_time = 0;
                 $trip->normal_fee = $request->normal_fee;
-                $trip->waiting_fee = $request->waiting_fee;
-                $trip->extra_fee = $request->extra_fee;
-                $trip->total_cost = $request->total_cost;
+                $trip->waiting_fee =0;
+                $trip->extra_fee = 0;
+                $trip->total_cost = 0;
                 $trip->start_lat = $request->start_lat;
                 $trip->start_lng = $request->start_lng;
                 $trip->end_lat = $request->end_lat;
