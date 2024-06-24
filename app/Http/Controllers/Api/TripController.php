@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TripController extends Controller
 {
@@ -26,15 +28,56 @@ class TripController extends Controller
 
     public function tripStart(Request $request)
     {
-        $driverid = $request->driver_id;
+        
+        $driverId = $request->driver_id;
 
-        $id = Trip::where('driver_id',$driverid)->where('status','accepted')->get();
+        // Fetch the trip with the accepted status for the given driver
+        $trip = Trip::where('driver_id', $driverId)
+                    ->where('status', 'accepted')
+                    ->first();
 
+        if (!$trip) {
+            return response()->json(['error' => 'Trip not found or already started'], 404);
+        }
 
-        $trip = Trip::find($id->first()->id);
+        // Update the trip status to 'driving'
         $trip->status = 'driving';
         $trip->save();
 
+        // Prepare the data for the external API
+        if ($trip->user_id !== null) {
+            $data = [
+                "customerId" => $trip->user_id,
+                "status" => "driving"
+            ];
+    
+            // Make the POST request to the external API
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json'
+            ])->post("http://13.212.113.174/sendTripStatus", $data);
+    
+            
+        // Log the full response for debugging
+        Log::info('External API Response', ['response' => $response->body()]);
+
+        // Check if the external API call was successful
+        if ($response->failed()) {
+            return response()->json(['error' => 'Failed to update external API'], $response->status());
+        }
+
+        // Try to decode the JSON response
+        $apiResponseData = $response->json();
+        if (!$apiResponseData) {
+            // Handle non-JSON response
+            $apiResponseData = ['raw' => $response->body()];
+        }
+
+        return response()->json([
+            'trip' => $trip,
+            'externalApiResponse' => $apiResponseData
+        ]);
+        }
+    
         return response()->json($trip);
     }
 

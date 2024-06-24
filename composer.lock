@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-crt-php",
-            "version": "v1.2.5",
+            "version": "v1.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/awslabs/aws-crt-php.git",
-                "reference": "0ea1f04ec5aa9f049f97e012d1ed63b76834a31b"
+                "reference": "a63485b65b6b3367039306496d49737cf1995408"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/awslabs/aws-crt-php/zipball/0ea1f04ec5aa9f049f97e012d1ed63b76834a31b",
-                "reference": "0ea1f04ec5aa9f049f97e012d1ed63b76834a31b",
+                "url": "https://api.github.com/repos/awslabs/aws-crt-php/zipball/a63485b65b6b3367039306496d49737cf1995408",
+                "reference": "a63485b65b6b3367039306496d49737cf1995408",
                 "shasum": ""
             },
             "require": {
@@ -56,9 +56,9 @@
             ],
             "support": {
                 "issues": "https://github.com/awslabs/aws-crt-php/issues",
-                "source": "https://github.com/awslabs/aws-crt-php/tree/v1.2.5"
+                "source": "https://github.com/awslabs/aws-crt-php/tree/v1.2.6"
             },
-            "time": "2024-04-19T21:30:56+00:00"
+            "time": "2024-06-13T17:21:28+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
@@ -2841,16 +2841,16 @@
         },
         {
             "name": "kreait/firebase-php",
-            "version": "7.12.0",
+            "version": "7.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kreait/firebase-php.git",
-                "reference": "6535aeedb5786d7dd330e83eba4599a9d405c4c7"
+                "reference": "94f394b67990daad1d9e16e683300fc276cf26d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kreait/firebase-php/zipball/6535aeedb5786d7dd330e83eba4599a9d405c4c7",
-                "reference": "6535aeedb5786d7dd330e83eba4599a9d405c4c7",
+                "url": "https://api.github.com/repos/kreait/firebase-php/zipball/94f394b67990daad1d9e16e683300fc276cf26d8",
+                "reference": "94f394b67990daad1d9e16e683300fc276cf26d8",
                 "shasum": ""
             },
             "require": {
@@ -2889,7 +2889,8 @@
                 "phpunit/phpunit": "^10.5.20",
                 "rector/rector": "^1.0.5",
                 "shipmonk/composer-dependency-analyser": "^1.5.3",
-                "symfony/var-dumper": "^6.3.5 || ^7.0.7"
+                "symfony/var-dumper": "^6.3.5 || ^7.0.7",
+                "vlucas/phpdotenv": "^5.6"
             },
             "suggest": {
                 "google/cloud-firestore": "^1.0 to use the Firestore component"
@@ -2935,7 +2936,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-26T12:44:04+00:00"
+            "time": "2024-06-23T08:41:48+00:00"
         },
         {
             "name": "kreait/firebase-tokens",
@@ -3013,22 +3014,22 @@
         },
         {
             "name": "kreait/laravel-firebase",
-            "version": "5.8.0",
+            "version": "5.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kreait/laravel-firebase.git",
-                "reference": "a028cb6ad58c534f763fca03e7dcc392074631da"
+                "reference": "dbaf9dc50161edcc19f4f45e825c8eafc0f7df6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kreait/laravel-firebase/zipball/a028cb6ad58c534f763fca03e7dcc392074631da",
-                "reference": "a028cb6ad58c534f763fca03e7dcc392074631da",
+                "url": "https://api.github.com/repos/kreait/laravel-firebase/zipball/dbaf9dc50161edcc19f4f45e825c8eafc0f7df6c",
+                "reference": "dbaf9dc50161edcc19f4f45e825c8eafc0f7df6c",
                 "shasum": ""
             },
             "require": {
                 "illuminate/contracts": "^9.0 || ^10.0 || ^11.0",
                 "illuminate/support": "^9.0 || ^10.0 || ^11.0",
-                "kreait/firebase-php": "^7.0",
+                "kreait/firebase-php": "^7.13",
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
                 "symfony/cache": "^6.1.2 || ^7.0.3"
             },
@@ -3075,7 +3076,7 @@
             ],
             "support": {
                 "issues": "https://github.com/kreait/laravel-firebase/issues",
-                "source": "https://github.com/kreait/laravel-firebase/tree/5.8.0"
+                "source": "https://github.com/kreait/laravel-firebase/tree/5.9.1"
             },
             "funding": [
                 {
@@ -3083,7 +3084,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-13T18:33:13+00:00"
+            "time": "2024-06-23T20:49:35+00:00"
         },
         {
             "name": "laravel/framework",

@@ -12,6 +12,8 @@
     <link type="image/png" href="{{ asset('assets/icon/favicon-32x32.png') }}" rel="icon" sizes="32x32">
     <link type="image/png" href="{{ asset('assets/icon/favicon-16x16.png') }}" rel="icon" sizes="16x16">
 	<link href="{{ asset('assets/icon/site.webmanifest') }}" rel="manifest">
+    <link type="text/css" href="{{ asset('assets/dist/loder.css') }}" rel="stylesheet" ?>
+
 	<style>
 		#loader {
 			background: rgb(255, 255, 255) url("https://admin.shwepadauktaxi.com/assets/loading/loading.gif") no-repeat center center !important;
