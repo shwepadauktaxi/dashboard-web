@@ -361,7 +361,7 @@ class AuthController extends Controller
 
         if($userOtp){
 
-            if($phoneNumber === '09798123885'){
+            if($phoneNumber === '09778933670'){
 
                 $userOtp->otp_code = '000000';
                 $userOtp->save();
@@ -389,7 +389,7 @@ class AuthController extends Controller
 
         }
 
-        if($phoneNumber === '09798123885'){
+        if($phoneNumber === '09778933670'){
 
             $UserOTP = new UserOTP();
             $UserOTP->user_id = $user->id;
@@ -435,7 +435,7 @@ class AuthController extends Controller
             $userOtp = $user->userotp;
 
             $now = now();
-            if($phoneNumber === '09798123885'){
+            if($phoneNumber === '09778933670'){
                 $user->save();
                 $userOtp->verified_phone = $now;
                 $userOtp->save();
