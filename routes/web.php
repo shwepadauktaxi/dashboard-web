@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppDownloadController;
+use App\Http\Controllers\Backend\BookingController;
 use App\Http\Controllers\Backend\ChangeLogController;
 use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\CustomNotificationController;
@@ -120,6 +121,9 @@ Route::middleware(['auth', 'role:admin|staff'])->group(function () {
 
     // google map 
     Route::get('/map',[MapController::class,'index'])->name('map.index');
+
+    // booking route 
+    Route::get('/booking',[BookingController::class,'index'])->name('booking.index');
 
   
 });
