@@ -16,6 +16,25 @@
 	<div class="">
 		<ul class="nav nav-pills flex-column align-content-sm-stretch justify-content-center">
 			<li class="nav-item">
+				<a class="nav-link @if (url()->current() === route('booking.index')) active @endif " href="{{ route('booking.index') }}"
+					aria-current="page">
+					<span class="pe-3">
+							@if (url()->current() === route('booking.index'))
+							<!-- Plus icon SVG when the route is active -->
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C12.5523 2 13 2.44772 13 3V11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H13V21C13 21.5523 12.5523 22 12 22C11.4477 22 11 21.5523 11 21V13H3C2.44772 13 2 12.5523 2 12C2 11.4477 2.44772 11 3 11H11V3C11 2.44772 11.4477 2 12 2Z" fill="#fff"/>
+							</svg>
+						@else
+							<!-- Original icon SVG when the route is not active -->
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" clip-rule="evenodd" d="M2 13.25H9.5C10.1875 13.25 10.75 12.6875 10.75 12V2C10.75 1.3125 10.1875 0.75 9.5 0.75H2C1.3125 0.75 0.75 1.3125 0.75 2V12C0.75 12.6875 1.3125 13.25 2 13.25ZM2 23.25H9.5C10.1875 23.25 10.75 22.6875 10.75 22V17C10.75 16.3125 10.1875 15.75 9.5 15.75H2C1.3125 15.75 0.75 16.3125 0.75 17V22C0.75 22.6875 1.3125 23.25 2 23.25ZM14.5 23.25H22C22.6875 23.25 23.25 22.6875 23.25 22V12C23.25 11.3125 22.6875 10.75 22 10.75H14.5C13.8125 10.75 13.25 11.3125 13.25 12V22C13.25 22.6875 13.8125 23.25 14.5 23.25ZM13.25 2V7C13.25 7.6875 13.8125 8.25 14.5 8.25H22C22.6875 8.25 23.25 7.6875 23.25 7V2C23.25 1.3125 22.6875 0.75 22 0.75H14.5C13.8125 0.75 13.25 1.3125 13.25 2Z" fill="#524E45" />
+							</svg>
+						@endif
+					</span>
+					<span class="d-inline d-sm-none d-xl-inline">New Booking</span>
+				</a>
+			</li>
+			<li class="nav-item">
 				<a class="nav-link @if (url()->current() === route('dashboard')) active @endif " href="{{ route('dashboard') }}"
 					aria-current="page">
 					<span class="pe-3">
