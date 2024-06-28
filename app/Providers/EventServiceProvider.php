@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\TripNearDriverAllEvent' => [
             'App\Listeners\newNearDriver',
         ],
+        \Illuminate\Notifications\Events\NotificationFailed::class => [
+            \App\Listeners\DeleteExpiredNotificationTokens::class,
+        ],
     ];
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Notifications\PushNotification\TopUpCompleted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -39,60 +40,61 @@ class TransactionController extends Controller
         $user->balance += $request->amount;
         $user->save();
 
-        // Create a new transaction record
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => $request->user_id,
             'staff_id' => Auth::id(),
             'amount' => $request->amount,
             'income_outcome' => 'income',
         ]);
 
-        $url = 'https://fcm.googleapis.com/fcm/send';
+        $user->notify(new TopUpCompleted($transaction->amount));
 
-        $FcmToken = [$user->device_token];
+        // $url = 'https://fcm.googleapis.com/fcm/send';
 
-        $serverKey = "AAAAFYDzjbw:APA91bHtk8kPufHHYt_EG1HebesEdgWoqEq51Mq0xSE5XBpi_7vBcG7eAAcWUClAiXScaVgb2x56qDCeZ2yb8ln9CwjItVOwt8eYn9Api0ToysWPR5cGhmIymz1Kr3UBrUgjkqV-b3p7";
+        // $FcmToken = [$user->device_token];
 
-        $data = [
-            "registration_ids" => $FcmToken,
-            "notification" => [
-                "title" => 'Top Up',
-                "body" => 'You recieved ' . $request->amount . 'MMK',
-            ]
-        ];
-        $encodedData = json_encode($data);
+        // $serverKey = "AAAAFYDzjbw:APA91bHtk8kPufHHYt_EG1HebesEdgWoqEq51Mq0xSE5XBpi_7vBcG7eAAcWUClAiXScaVgb2x56qDCeZ2yb8ln9CwjItVOwt8eYn9Api0ToysWPR5cGhmIymz1Kr3UBrUgjkqV-b3p7";
 
-        $headers = [
-            'Authorization:key=' . $serverKey,
-            'Content-Type: application/json',
-        ];
+        // $data = [
+        //     "registration_ids" => $FcmToken,
+        //     "notification" => [
+        //         "title" => 'Top Up',
+        //         "body" => 'You recieved ' . $request->amount . 'MMK',
+        //     ]
+        // ];
+        // $encodedData = json_encode($data);
 
-        $ch = curl_init();
+        // $headers = [
+        //     'Authorization:key=' . $serverKey,
+        //     'Content-Type: application/json',
+        // ];
 
-        curl_setopt(
-            $ch,
-            CURLOPT_URL,
-            $url
-        );
-        curl_setopt(
-            $ch,
-            CURLOPT_POST,
-            true
-        );
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        // Disabling SSL Certificate support temporarly
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $encodedData);
-        // Execute post
-        $result = curl_exec($ch);
-        if ($result === FALSE) {
-            die('Curl failed: ' . curl_error($ch));
-        }
-        // Close connection
-        curl_close($ch);
+        // $ch = curl_init();
+
+        // curl_setopt(
+        //     $ch,
+        //     CURLOPT_URL,
+        //     $url
+        // );
+        // curl_setopt(
+        //     $ch,
+        //     CURLOPT_POST,
+        //     true
+        // );
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        // curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        // // Disabling SSL Certificate support temporarly
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $encodedData);
+        // // Execute post
+        // $result = curl_exec($ch);
+        // if ($result === FALSE) {
+        //     die('Curl failed: ' . curl_error($ch));
+        // }
+        // // Close connection
+        // curl_close($ch);
         // Redirect back to the top-up form with a success message
         return redirect()->back()->with('success', 'Top-up successful.');
     }

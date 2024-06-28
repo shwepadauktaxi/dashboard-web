@@ -96,4 +96,9 @@ class User extends Authenticatable
     public function userotp(){
         return $this->hasOne(UserOTP::class,'user_id');
     }
+
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
+    }
 }
