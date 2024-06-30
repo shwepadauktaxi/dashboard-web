@@ -3285,6 +3285,12 @@ var Toast = sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().mixin({
 });
 window.Pusher = (pusher_js__WEBPACK_IMPORTED_MODULE_2___default());
 (pusher_js__WEBPACK_IMPORTED_MODULE_2___default().logToConsole) = false;
+window.Echo = new Echo({
+  broadcaster: "pusher",
+  key: /* unsupported import.meta.env.VITE_PUSHER_APP_KEY */ undefined.VITE_PUSHER_APP_KEY,
+  cluster: /* unsupported import.meta.env.VITE_PUSHER_APP_CLUSTER */ undefined.VITE_PUSHER_APP_CLUSTER,
+  forceTLS: true
+});
 var pusher = new (pusher_js__WEBPACK_IMPORTED_MODULE_2___default())("ff6d2dc3e07b1864a77d", {
   cluster: "ap1"
 });
@@ -3366,6 +3372,27 @@ __webpack_require__.r(__webpack_exports__);
 
 window.axios = axios__WEBPACK_IMPORTED_MODULE_1__["default"];
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allows your team to easily build robust real-time web applications.
+ */
+
+// import Echo from 'laravel-echo';
+
+// import Pusher from 'pusher-js';
+// window.Pusher = Pusher;
+
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: import.meta.env.VITE_PUSHER_APP_KEY,
+//     wsHost: import.meta.env.VITE_PUSHER_HOST ?? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+//     enabledTransports: ['ws', 'wss'],
+// });
 
 /***/ }),
 
@@ -24096,7 +24123,7 @@ const toJSONObject = (obj) => {
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"/js/app": 0,
+/******/ 			"/resources/js/echo": 0,
 /******/ 			"css/app": 0
 /******/ 		};
 /******/ 		

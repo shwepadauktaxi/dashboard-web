@@ -227,14 +227,28 @@
     {{-- gogle map   --}}
     <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_MAP_KEY')}}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_MAP_KEY')}}&libraries=geometry"></script>
-
-
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.0/echo.iife.js"></script>
 	<script>
 
 
+       Pusher.logToConsole = true;
 
+       let pusher = new Pusher('ff6d2dc3e07b1864a77d', {
+       cluster: 'ap1',
+       });
 
+       let channel = pusher.subscribe('driver-location-{{ $user->id }}');
+       channel.bind("driver-location-event", (data) => {
+            let driver = data.driver;
 
+            if(driver.id=== user.id){
+                if(latitude !== driver.lat || longitude !== driver.lng){
+                    changeMarkerPositions(driver);
+                }
+            }
+
+        });
 
 
 
@@ -323,10 +337,19 @@
                 });
         }
 
+        // var channel = pusher.subscribe("topup-request-channel");
+        // channel.bind("topup-request-noti-event", function (data) {
+        //     Toast.fire({
+        //         icon: "info",
+        //         title: data.message,
+        //     });
+        //     topupRequest();
+        // });
+
 
          // map
-         let user = @json($user);
-         let latitude = user.lat;
+        let user = @json($user);
+        let latitude = user.lat;
         var longitude = user.lng;
         let taxicon = '';
 
@@ -348,12 +371,12 @@
 			map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend)
 		}
 
+        var markers = {};
+
         function changeMarkerPositions(locations)
 		{
-
-
 			var infowindow = new google.maps.InfoWindow();
-			var markers = {};
+
 			if(markers[locations.id] ){
 						markers[locations.id].setMap(null); // set markers setMap to null to remove it from map
 						delete markers[locations.id]; // delete marker instance from markers object
@@ -381,14 +404,6 @@
             initialize()
             changeMarkerPositions(user)
         }
-
-
-
-
-    //    --------------------------------
-
-
-
 
     </script>
 

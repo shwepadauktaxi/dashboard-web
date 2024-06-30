@@ -15,7 +15,7 @@ const Toast = Swal.mixin({
         toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
 });
-
+window.Pusher = Pusher;
 Pusher.logToConsole = false;
 
 var pusher = new Pusher("ff6d2dc3e07b1864a77d", {
