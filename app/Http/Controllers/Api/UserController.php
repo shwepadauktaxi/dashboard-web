@@ -299,9 +299,14 @@ class UserController extends Controller
                     });
                 // $extraFeeList = json_decode($trip->extra_fee_list, true);
                 // $extraFees = Fee::whereIn('id', $extraFeeList)->get();
+                    $customer = $trip->user_id;
+                if($trip->user_id !== null){
+                    $customer = User::find($customer);
+                }
+                
                 return [
                     'id' => $trip->id,
-                    'user_id'=>$trip->user_id,
+                    'user_id'=>$customer,
                     'distance'=> $trip->distance,
                     'duration'=> $trip->duration,
                     'waiting_time'=> $trip->waiting_time,

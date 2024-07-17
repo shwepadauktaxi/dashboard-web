@@ -31,7 +31,7 @@
 							</svg>
 						@endif
 					</span>
-					<span class="d-inline d-sm-none d-xl-inline">New Booking</span>
+					<span class="d-inline d-sm-none d-xl-inline">Booking</span>
 				</a>
 			</li>
 			<li class="nav-item">
