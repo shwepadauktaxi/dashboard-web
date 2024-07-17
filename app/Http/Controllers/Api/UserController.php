@@ -21,7 +21,6 @@ class UserController extends Controller
 {
 
 
-
     public function profile()
     {
         $user = Auth::user();
@@ -37,6 +36,7 @@ class UserController extends Controller
             $notification = $user->notifications;
         }else{
             $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
+
             $userImage = $user->userImage;
 
 
@@ -44,9 +44,6 @@ class UserController extends Controller
 
             $notification = $user->notifications;
         }
-
-
-
 
         return response()->json(['user' => $user,'url'=>$url, 'success' => true], 200);
     }

@@ -155,20 +155,12 @@ class AuthController extends Controller
 
          // upload and save profile  image
          if ($request->hasFile('profile_image')) {
+            $profileImage = $request->file('profile_image');
+            $profileImageName =  uniqid()  . '.' . $profileImage->getClientOriginalExtension();
+            // $profileImage->storeAs('uploads/images/profiles', $profileImageName);
 
-             $profileImage = $request->file('profile_image');
-
-
-
-             // Generate a unique name for the file based on user's NRC number and extension
-             $profileImageName = uniqid() .' .'. $profileImage->getClientOriginalExtension();
-
-             // Store the file in AWS S3 bucket
-             Storage::disk('s3')->put($profileImageName, file_get_contents($profileImage));
-
-             // Assuming $userImage is your user model instance, update the profile_image attribute
-             $userImage->profile_image = $profileImageName;
-             $userImage->save();
+            Storage::disk('s3')->put($profileImageName, file_get_contents($profileImage));
+            $userImage->profile_image = $profileImageName;
 
         }
 

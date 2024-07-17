@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.0",
+        "aws/aws-sdk-php": "^3.316",
         "beyondcode/laravel-websockets": "^1.14",
         "doctrine/dbal": "^3.0",
         "guzzlehttp/guzzle": "^7.8",
